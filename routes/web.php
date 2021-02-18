@@ -13,7 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::resource('users', 'ProvaController');
+/* Route::get('users', 'ProvaController@index');
+Route::post('posts', 'ProvaController@store');
+Route::get('posts/create', 'ProvaController@create'); */
+// resource route/controller
+Route::resource('posts', 'PostController'); // questo controllo è l'equivalnte di tutte le route con i metodi scritti sopra.
 
 Route::get('/', function () {
     return view('welcome');
