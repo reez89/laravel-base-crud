@@ -14,7 +14,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $posts = Post::latest()->get();
         //dd($posts);
         return view('posts.index', compact('posts'));
     }
@@ -26,7 +26,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
@@ -35,9 +35,18 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
-        //
+        $data = $request->validate([
+            'title' => 'required|unique:posts|max:255',
+            'body' => 'required'
+        ]);
+        $data = $request->all();
+        $newPost = new Post;
+        $newPost->title = $data['title'];
+        $newPost->body =$data['body'];
+        $newPost->save();
+        return redirect()->route('posts.index', $post);
     }
 
     /**
@@ -48,7 +57,7 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        return view('posts.show', compact('post'));
     }
 
     /**
@@ -59,7 +68,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -71,7 +80,9 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        $data = $request->all();
+        $post->update($data);
+        return redirect()->route('posts.show', $post);
     }
 
     /**
@@ -82,6 +93,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        //
+        $post->delete();
+        return redirect()->route('posts.index');
     }
 }
